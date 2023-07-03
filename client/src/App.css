@@ -24,6 +24,23 @@
   color: white;
 }
 
+.card{
+  width: 50%;
+  margin: 20px auto;
+  padding: 5px;
+  background-color:grey;
+  flex: display;
+  justify-content: center;
+}
+.card label{
+  width: 100%;
+}
+.card button{
+  width: 90px;
+  margin: 5px;
+}
+
+
 .App-link {
   color: #61dafb;
 }

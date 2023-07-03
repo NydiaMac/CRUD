@@ -87,11 +87,11 @@ function App() {
           <div>
             {
               editar?
-              <button onClick={actualizarProd}>Guardar</button>
+              <button onClick={actualizarProd} class="btn btn-primary">Guardar</button>
               :
-              <button onClick={registrarProd}>Agregar</button>
+              <button onClick={registrarProd} class="btn btn-success">Agregar</button>
             }
-            <button onClick={cancelar}>Cancelar</button>
+            <button onClick={cancelar} class="btn btn-secondary">Cancelar</button>
           </div>
         </div>
         <table class="table">
@@ -115,10 +115,10 @@ function App() {
               <button type="submit"
               onClick={()=>{
                 editarProd(val)
-              }}>Editar</button>
+              }} class="btn btn-warning">Editar</button>
               <button onClick={()=>{
                 eliminarProd(val.id);
-                }}type="submit">Borrar</button>
+                }}type="submit" class="btn btn-danger">Borrar</button>
             </td>
           </tr>
       })

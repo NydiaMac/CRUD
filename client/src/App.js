@@ -4,11 +4,12 @@ import axios from "axios";
 
 
 function App() {
+  const [id,setId] = useState(0)
   const [nombre,setNombre] = useState("");
   const [descrip,setDescrip] = useState("");
-  const [precio,setPrecio] = useState("");
-
+  const [precio,setPrecio] = useState(0);
   const [productosList,setproductos] = useState([]);
+  const [editar,setEditar] = useState(false);
 
   
   const registrarProd = ()=>{
@@ -18,7 +19,49 @@ function App() {
       precio:precio
     }).then(()=>{
       alert("Nuevo producto agregado!");
+      cancelar();
     })
+  }
+
+  const cancelar = ()=>{
+    setEditar(false);
+    setId(0)
+    setNombre("");
+    setDescrip("");
+    setPrecio(0);
+  }
+  const editarProd = (val) => {
+    setEditar(true);
+    setNombre(val.nombre);
+    setDescrip(val.descrip);
+    setPrecio(val.precio);
+    setId(val.id); 
+  }
+
+  const actualizarProd = ()=>{
+    axios.put("http://localhost:3001/update",{
+      id:id,
+      nombre:nombre,
+      descrip:descrip,
+      precio:precio
+    }).then(()=>{
+      getproductos();
+      setEditar(false);
+      cancelar();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }
+
+  const eliminarProd = (id)=>{
+    axios.delete(`http://localhost:3001/delete/${id}`).then(()=>{
+      getproductos();
+      cancelar();
+    })
+    .catch(error => {
+      console.error(error);
+    });
   }
 
   const getproductos = ()=>{
@@ -26,9 +69,9 @@ function App() {
       setproductos(response.data);
     })
     .catch(error => {
-      // Handle error
       console.error(error);
-    });
+    })
+    ;
   }
   getproductos();
   
@@ -38,12 +81,17 @@ function App() {
         <h1>CRUD ~ Chilli Guajilli</h1>
   
         <div className="card">
-          <label>Nombre: <input onChange={(event)=>{setNombre(event.target.value);}} type="text"/></label><br/>
-          <label>Descripcion: <input onChange={(event)=>{setDescrip(event.target.value);}}type="text"/></label><br/>
-          <label>Precio: <input onChange={(event)=>{setPrecio(event.target.value);}} type="number"/></label>
+          <label>Nombre: <input value={nombre} onChange={(event)=>{setNombre(event.target.value);}} type="text"/></label><br/>
+          <label>Descripcion: <input value={descrip} onChange={(event)=>{setDescrip(event.target.value);}}type="text"/></label><br/>
+          <label>Precio: <input value={precio} onChange={(event)=>{setPrecio(event.target.value);}} type="number"/></label>
           <div>
-            <button onClick={registrarProd}>Agregar</button>
-            <button>Cancelar</button>
+            {
+              editar?
+              <button onClick={actualizarProd}>Guardar</button>
+              :
+              <button onClick={registrarProd}>Agregar</button>
+            }
+            <button onClick={cancelar}>Cancelar</button>
           </div>
         </div>
         <table class="table">
@@ -59,13 +107,18 @@ function App() {
     {
       productosList.map((val,key)=>{
         return <tr key={val.ID}>
-            <th scope="row">{val.ID}</th>
+            <th scope="row">{val.id}</th>
             <td>{val.nombre}</td>
             <td>{val.descrip}</td>
             <td>${val.precio}</td>
             <td>
-              <button type="submit">Editar</button>
-              <button type="submit">Borrar</button>
+              <button type="submit"
+              onClick={()=>{
+                editarProd(val)
+              }}>Editar</button>
+              <button onClick={()=>{
+                eliminarProd(val.id);
+                }}type="submit">Borrar</button>
             </td>
           </tr>
       })

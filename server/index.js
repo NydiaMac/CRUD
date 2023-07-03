@@ -32,7 +32,6 @@ app.post("/create",(req,res)=>{
     const nombre = req.body.nombre;
     const descrip = req.body.descrip;
     const precio = req.body.precio;
-    //guarda los datos al ser creados 
     db.query('INSERT INTO productos (nombre,descrip,precio) VALUES (?,?,?)',[nombre,descrip,precio],
     (err,result)=>{
         if(err){
@@ -44,6 +43,38 @@ app.post("/create",(req,res)=>{
     );  
 });
 
+//peticion de actualizacion
+app.put("/update",(req,res)=>{
+    const id = req.body.id;
+    const nombre = req.body.nombre;
+    const descrip = req.body.descrip;
+    const precio = req.body.precio;
+    db.query('UPDATE productos SET nombre=?,descrip=?,precio=? WHERE ID=?',[nombre,descrip,precio,id],
+    (err,result)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.send("Producto modificado!");
+        }
+    }
+    );  
+});
+
+
+//peticion de eliminacion
+app.delete("/delete/:id",(req,res)=>{
+    const id = req.params.id;
+    db.query('DELETE FROM productos  WHERE ID=?',[id],
+    (err,result)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.send(result);
+        }
+    }
+    );
+});
+
 app.listen(3001,()=>{
     console.log("Conexión, puerto:3001")
-})
+});
